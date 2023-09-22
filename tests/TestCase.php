@@ -4,15 +4,16 @@ namespace RyanChandler\FilamentFeatureFlags\Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
-use Filament\Facades\Filament;
+use Filament\FilamentManager;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
+use Filament\Panel;
 use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
-use RyanChandler\FilamentFeatureFlags\FilamentFeatureFlagsServiceProvider;
+use RyanChandler\FilamentFeatureFlags\FilamentFeatureFlagsPlugin;
 use RyanChandler\FilamentFeatureFlags\Tests\Filament\Resources\PostResource;
 use RyanChandler\FilamentFeatureFlags\Tests\Filament\Resources\TeamResource;
 use RyanChandler\LaravelFeatureFlags\LaravelFeatureFlagsServiceProvider;
@@ -38,7 +39,6 @@ class TestCase extends Orchestra
             TablesServiceProvider::class,
             BladeIconsServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
-            FilamentFeatureFlagsServiceProvider::class,
             LaravelFeatureFlagsServiceProvider::class,
         ];
     }
@@ -54,9 +54,14 @@ class TestCase extends Orchestra
         $featureFlagsMigration = include __DIR__ . '/../vendor/ryangjchandler/laravel-feature-flags/database/migrations/create_feature_flags_table.php.stub';
         $featureFlagsMigration->up();
 
-        Filament::registerResources([
-            PostResource::class,
-            TeamResource::class,
-        ]);
+        $panel = Panel::make()
+            ->id('test')
+            ->plugin(new FilamentFeatureFlagsPlugin)
+            ->resources([
+                PostResource::class,
+                TeamResource::class,
+            ]);
+
+        (new FilamentManager)->registerPanel($panel);
     }
 }

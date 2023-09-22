@@ -60,9 +60,6 @@
     },
     "extra": {
         "laravel": {
-            "providers": [
-                "RyanChandler\\FilamentFeatureFlags\\FilamentFeatureFlagsServiceProvider"
-            ],
             "aliases": {
                 "FilamentFeatureFlags": "RyanChandler\\FilamentFeatureFlags\\Facades\\FilamentFeatureFlags"
             }
